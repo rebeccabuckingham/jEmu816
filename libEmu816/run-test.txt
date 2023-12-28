@@ -1,0 +1,2 @@
+lib/build/exe/test/libTest ~/jEmu816/libEmu816/examples/simple.s28
+

@@ -1,0 +1,22 @@
+package jEmu816;
+
+public class Rom extends Ram {
+	public Rom(String name, int baseAddress, int addressSize) {
+		super(name, baseAddress, addressSize);
+	}
+
+	@Override
+	public void writeByte(int addr, int byteValue) {
+		// does nothing
+	}
+
+	@Override
+	public void writeWord(int addr, int wordValue) {
+		// does nothing
+	}
+
+	// for loading from a file or something
+	public void setContents(int[] values) {
+		memory = values;
+	}
+}

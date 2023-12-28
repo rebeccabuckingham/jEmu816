@@ -1,0 +1,3 @@
+the library is in: lib/build/lib/main/debug/liblib.dylib
+this is built via ./gradlew build -x test
+
