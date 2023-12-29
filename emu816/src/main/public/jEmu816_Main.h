@@ -25,6 +25,14 @@ JNIEXPORT jstring JNICALL Java_jEmu816_Main_step
 
 /*
  * Class:     jEmu816_Main
+ * Method:    getStatus
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_jEmu816_Main_getStatus
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     jEmu816_Main
  * Method:    loadFile
  * Signature: (Ljava/lang/String;)V
  */

@@ -40,19 +40,18 @@ public abstract class CpuBase {
 		x = Register.makeIndexRegister(this);
 		y = Register.makeIndexRegister(this);
 		dp = 0;
+		f.i = true;
+		f.m = true;
+		f.x = true;
+		f.e = true;
 	}
 
 	public String toString() {
-		return
-			"pc:" + fullAddressToHex(pc) +
-				" sp:" + toHex(sp, 4) +
-				" f:" + f.toString() +
-				" a:" + toHex(a.getValue(), 4) +
-				" x:" + toHex(x.getValue(), 4) +
-				" y:" + toHex(y.getValue(), 4) +
-				" dp:" + toHex(dp, 4) +
-				" dbr:" + fullAddressToHex(dbr << 16) +
-				" pcByte: " + toHex(machine.getByte(join(pbr, pc)), 2);
+		// emu816 status: pc:00:f000 sp:0100 f:nvMXdIzc:E a:0000 x:0000 y:0000 dp:0000 pcByte: 78 cycles: 0
+		int b = machine.getByte(join(pbr, pc));
+
+		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x cycles: %d",
+										dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp, b, cycles);
 	}
 
 	private void decSP() {
@@ -100,7 +99,7 @@ public abstract class CpuBase {
 
 	public void reset() {
 		pc = machine.getWord(RESET_VECTOR_6502);
-		sp = 0x00ff;
+		sp = 0x0100;
 		pbr = 0x00;
 		dbr = 0x00;
 		stopped = true;

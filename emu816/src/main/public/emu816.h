@@ -49,6 +49,7 @@ class emu816 :
 public:
 	static void reset(bool trace);
 	static void step();
+  static void getStatus(char *buffer);
 
 	INLINE static unsigned long getCycles()
 	{

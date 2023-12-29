@@ -59,6 +59,28 @@ emu816::emu816()
 emu816::~emu816()
 { }
 
+void emu816::getStatus(char *buffer) {
+  char flags[11];
+
+  Byte b = getByte(join(pbr, pc));
+
+  flags[0] = p.f_n ? 'N' : 'n';
+  flags[1] = p.f_v ? 'V' : 'v';
+  flags[2] = p.f_m ? 'M' : 'm';
+  flags[3] = p.f_x ? 'X' : 'x';
+  flags[4] = p.f_d ? 'D' : 'd';
+  flags[5] = p.f_i ? 'I' : 'i';
+  flags[6] = p.f_z ? 'Z' : 'z';
+  flags[7] = p.f_c ? 'C' : 'c';
+  flags[8] = ':';
+  flags[9] = e ? 'E' : 'e';
+  flags[10] = '\0';
+
+  sprintf(buffer, "pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x cycles: %d",
+    dbr, pc, sp, flags, a, x, y, dp, b, cycles
+  );
+}
+
 // Reset the state of emulator
 void emu816::reset(bool trace)
 {

@@ -4,10 +4,10 @@ public class Flags {
 
 	public boolean n;
 	public boolean v;
-	public boolean m;
-	public boolean x;
+	public boolean m = true;
+	public boolean x = true;
 	public boolean d;
-	public boolean i;
+	public boolean i = true;
 	public boolean z;
 	public boolean c;
 
@@ -47,12 +47,12 @@ public class Flags {
 			(d ? 'D' : 'd') +
 			(i ? 'I' : 'i') +
 			(z ? 'Z' : 'z') +
-			(c ? 'C' : 'c') +
+			(c ? 'C' : 'c') + ':' +
 			(e ? 'E' : 'e');
 	}
 
 	public void reset() {
 		e = true;
-		setP(0);
+		setP(0x20 | 0x10 | 0x04);
 	}
 }
