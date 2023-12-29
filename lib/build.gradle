@@ -48,7 +48,7 @@ java {
 mainClassName = 'jEmu816/Main'
 
 application {
-	applicationDefaultJvmArgs = ["-Djava.library.path=" + file("../libEmu816/lib/build/lib/main/debug").absolutePath]
+	applicationDefaultJvmArgs = ["-Djava.library.path=" + file("../libEmu816/build/lib/main/debug").absolutePath]
 }
 
 tasks.named('test') {

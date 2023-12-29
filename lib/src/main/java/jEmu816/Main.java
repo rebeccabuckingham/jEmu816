@@ -9,7 +9,7 @@ public class Main {
 
 	// for testing support
 	static {
-		System.loadLibrary("lib");
+		System.loadLibrary("libEmu816");
 	}
 
 	public Main() {

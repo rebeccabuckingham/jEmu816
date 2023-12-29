@@ -26,5 +26,6 @@ tasks.withType(CppCompile).configureEach {
 
 tasks.withType(LinkExecutable).configureEach {
   linkerArgs.add '-v'
+  linkerArgs.add '-L/Users/rebecca/.sdkman/candidates/java/17.0.9.fx-zulu/zulu-17.jdk/Contents/Home/lib/server'
   linkerArgs.add '-ljvm'
 }
