@@ -675,7 +675,10 @@ public class Cpu extends CpuBase {
 	private void op_wdm(int ea) {
 		if (trace) { traceOp("wdm"); }
 		addCycles(3);
-		machine.getByte(ea);
+		int sigbyte = machine.getByte(ea);
+    if (sigbyte == 0xff) {
+      stopped = true;
+    }
 	}
 
 	// 0x44|mvp|immw|3|*|--------|7 per byte moved|

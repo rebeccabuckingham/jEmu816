@@ -165,8 +165,12 @@ public abstract class CpuBase {
 		pc = (pc + bytes) & 0xffff;
 	}
 
+  // stopped is set to true when WDM is executed with a $ff signature byte.
 	public void loop() {
-
+    stopped = false;
+    while (!stopped) {
+      step();
+    }
 	}
 
 	protected int getAddr(int ea) {

@@ -30,6 +30,10 @@ public abstract class Machine {
 		return cpu;
 	}
 
+  public void reset() {
+    cpu.reset();
+  }
+
 	public ArrayList<Device> getDevices() { return devices; }
 	public void setDevices(ArrayList<Device> devices) { this.devices = devices; }
 	public void addDevice(Device d) { this.devices.add(d); }
