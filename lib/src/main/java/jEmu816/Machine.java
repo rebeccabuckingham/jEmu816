@@ -90,4 +90,8 @@ public abstract class Machine {
 			d.writeWord(addr, wordValue);
 		}
 	}
+
+	public String toString() {
+		return cpu.toString() + " cycles: " + cycles;
+	}
 }

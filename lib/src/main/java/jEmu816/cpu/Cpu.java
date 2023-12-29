@@ -1,13 +1,19 @@
 package jEmu816.cpu;
 
+import static jEmu816.Util.fullAddressToHex;
 import static jEmu816.Util.join;
 import static jEmu816.Util.low;
 import static jEmu816.Util.swap;
+import static jEmu816.Util.toHex;
+
 
 import jEmu816.Machine;
 import jEmu816.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cpu extends CpuBase {
+	private static final Logger logger = LoggerFactory.getLogger(Cpu.class);
 
 	public Cpu(Machine machine) {
 		super(machine);
@@ -432,6 +438,7 @@ public class Cpu extends CpuBase {
 	}
 
 	private void branch(int ea, boolean condition) {
+		//logger.debug("branch: ea:" + toHex(ea, 4) + ", condition: " + condition);
 		if (condition) {
 			if (f.e && ((pc ^ ea) & 0xff00) != 0) ++cycles;
 			pc = ea;
@@ -676,6 +683,11 @@ public class Cpu extends CpuBase {
 		if (trace) { traceOp("wdm"); }
 		addCycles(3);
 		int sigbyte = machine.getByte(ea);
+
+		logger.warn("**************");
+		logger.warn("op_wdm ea: " + fullAddressToHex(ea) + ", sigbyte: " + sigbyte);
+		logger.warn("**************");
+
     if (sigbyte == 0xff) {
       stopped = true;
     }

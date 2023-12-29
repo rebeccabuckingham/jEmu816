@@ -50,8 +50,8 @@ public abstract class CpuBase {
 		// emu816 status: pc:00:f000 sp:0100 f:nvMXdIzc:E a:0000 x:0000 y:0000 dp:0000 pcByte: 78 cycles: 0
 		int b = machine.getByte(join(pbr, pc));
 
-		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x cycles: %d",
-										dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp, b, cycles);
+		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x",
+										dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp, b);
 	}
 
 	private void decSP() {
@@ -102,7 +102,7 @@ public abstract class CpuBase {
 		sp = 0x0100;
 		pbr = 0x00;
 		dbr = 0x00;
-		stopped = true;
+		stopped = false;
 		irq = false;
 	 	machine.cycles = 0;
 		f.reset();
@@ -412,7 +412,7 @@ public abstract class CpuBase {
 	// Long Relative - d
 	public int am_lrel() {
 		if (trace) { traceAm("am_lrel"); }
-		int disp = machine.getWord(join(pbr, pc));
+		short disp = (short) machine.getWord(join(pbr, pc));
 		addBytes(2);
 		addCycles(2);
 		return (bank(pbr) | (pc + disp));
@@ -421,7 +421,7 @@ public abstract class CpuBase {
 	// Relative - d
 	public int am_rela() {
 		if (trace) { traceAm("am_rela"); }
-		int disp = machine.getByte(join(pbr, pc));
+		byte disp = (byte) machine.getByte(join(pbr, pc));
 		addBytes(1);
 		addCycles(1);
 		return (bank(pbr) | (pc + disp));
