@@ -1,0 +1,20 @@
+* DONE initial coding of emulation
+* TODO write testing harness for each side
+** DONE write S28 loader for java emulator
+** TODO write code to get status from C++ side
+** TODO test harness outline
+*** 1) zero memory, then load S28 file on both sides
+*** 2) make sure reset vectors are the same 
+*** 3) call reset on both sides
+*** 4) step through each instruction on both sides, comparing results along the way
+  results = all registers must be the same & current cycles must be the same.
+
+current debug output for java side:
+pc:00:f001 sp:00ff f:nvmxdIzcE a:0000 x:0000 y:0000 dp:0000 dbr:00:0000 pcByte: d8
+- pcByte is the byte at [pc].
+- I need to add cycles to this: [this is the current total machine cycles]
+--> pc:00:f001 sp:00ff f:nvmxdIzcE a:0000 x:0000 y:0000 dp:0000 dbr:00:0000 pcByte: d8 cycles: 12
+
+* TODO run tests
+** TODO simple.s28
+** TODO write a bigger program and test it.

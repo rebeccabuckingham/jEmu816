@@ -15,6 +15,38 @@ extern "C" {
 JNIEXPORT jint JNICALL Java_jEmu816_Main_intMethod
   (JNIEnv *, jobject, jint);
 
+/*
+ * Class:     jEmu816_Main
+ * Method:    step
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_jEmu816_Main_step
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     jEmu816_Main
+ * Method:    loadFile
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_Main_loadFile
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     jEmu816_Main
+ * Method:    reset
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_Main_reset
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     jEmu816_Main
+ * Method:    init
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_Main_init
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
