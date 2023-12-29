@@ -12,5 +12,5 @@ plugins {
 
 rootProject.name = 'jEmu816'
 include('lib')
-include('libEmu816')
+include('emu816')
 
