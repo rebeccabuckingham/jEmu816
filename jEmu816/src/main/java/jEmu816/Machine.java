@@ -78,7 +78,7 @@ public abstract class Machine {
 	public int getWord(int addr) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			return d.readWord(addr);
+			return Util.join16(d.readByte(addr), d.readByte(addr + 1));
 		} else {
 			return 0xffff;
 		}
@@ -87,7 +87,8 @@ public abstract class Machine {
 	public void setWord(int addr, int wordValue) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			d.writeWord(addr, wordValue);
+			d.writeByte(addr, wordValue & 0xff);
+			d.writeByte(addr + 1, Util.swap(wordValue) & 0xff);
 		}
 	}
 

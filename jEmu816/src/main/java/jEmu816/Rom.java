@@ -10,11 +10,6 @@ public class Rom extends Ram {
 		// does nothing
 	}
 
-	@Override
-	public void writeWord(int addr, int wordValue) {
-		// does nothing
-	}
-
 	// for loading from a file or something
 	public void setContents(int[] values) {
 		memory = values;

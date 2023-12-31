@@ -14,9 +14,9 @@ using namespace std;
 void load(const char *filename);
 
 // just tests that the library indeed works
-JNIEXPORT jint JNICALL Java_jEmu816_Main_intMethod
-  (JNIEnv *env, jobject obj, jint num) {
-    return 20 + (num * num);
+JNIEXPORT jint JNICALL Java_jEmu816_Main_isStopped
+  (JNIEnv *, jobject) {
+    return emu816::isStopped();
   }
 
 // initializes the emu816 memory

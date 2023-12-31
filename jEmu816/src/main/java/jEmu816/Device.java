@@ -9,8 +9,6 @@ public abstract class Device {
 
 	public abstract int readByte(int addr);
 	public abstract void writeByte(int addr, int byteValue);
-	public abstract int readWord(int addr);
-	public abstract void writeWord(int addr, int wordValue);
 
 	public Device(String name, int baseAddress, int addressSize) {
 		this.name = name;

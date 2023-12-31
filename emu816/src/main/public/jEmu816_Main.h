@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     jEmu816_Main
- * Method:    intMethod
- * Signature: (I)I
+ * Method:    isStopped
+ * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_jEmu816_Main_intMethod
-  (JNIEnv *, jobject, jint);
+JNIEXPORT jint JNICALL Java_jEmu816_Main_isStopped
+  (JNIEnv *, jobject);
 
 /*
  * Class:     jEmu816_Main
