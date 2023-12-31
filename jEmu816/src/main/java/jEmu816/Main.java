@@ -51,20 +51,20 @@ public class Main {
 //			System.out.println(Util.dump(main.m, 0xf000, 0x20));
 
 		  System.out.println("running test...");
-			long start = System.nanoTime();
+			long start = System.currentTimeMillis();
 			long instructionCount = main.test(main);
-			long end = System.nanoTime();
-			long nanoSeconds = end - start;
+			long end = System.currentTimeMillis();
 
-		  System.out.println("total instruction count: " + instructionCount);
-			System.out.println("   total cycles elapsed: " + main.m.cycles);
-			System.out.println("      total nanoSeconds: " + nanoSeconds);
+      long cycles = main.m.cycles;
+      double seconds = (double) (end - start) / (double) 1000;
+      double cps = (double) cycles / (double) seconds;
 
-			double seconds = (double) nanoSeconds / (double) 1_000_000_000;
-			double hz = main.m.cycles / seconds;
+      double mhz = cps / 1_000_000;
 
-		  System.out.println("          total seconds: " + seconds);
-			System.out.println("         approximate Hz: " + hz);
+      System.out.println("total instructions executed: " + instructionCount);
+      System.out.println("            seconds elapsed: " + seconds);
+      System.out.println("            approximate Mhz: " + mhz);
+
 
     //}
   }
