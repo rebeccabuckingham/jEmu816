@@ -1,0 +1,10 @@
+to create two virtual serial ports and connect them:
+socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+you can then open each of the /dev/ttys* and talk between them.
+the question is can a Java program open one of the ttys and get/receive data?
+
+apparently, yes, you can open /dev/tty* and talk to it using a FileInputStream/FileOutputStream.
+
+the goal here would be to create a virtual serial port that minicom could talk to which would be
+easy to read/write from code running on the emulator.
