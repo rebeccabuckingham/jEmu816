@@ -30,6 +30,8 @@ public abstract class Device {
 		return baseAddress + addressSize - 1;
 	}
 
+	public int effectiveAddress(int addr) { return addr - baseAddress; }
+
 	public String toString() {
 		return "device: " + getName() + " start: " +
 			Util.fullAddressToHex(baseAddress) + " last: " +

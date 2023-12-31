@@ -1,6 +1,7 @@
 package jEmu816;
 
 import jEmu816.machines.RefMachine;
+import simpleConsole.ConsoleDevice;
 
 public class Main {
 	public native int isStopped();
@@ -26,6 +27,8 @@ public class Main {
 	public Main() {
 		// initialize emu816
 		m = new RefMachine();
+//		consoleDevice = new ConsoleDevice((int) 0xD000, 4);
+//		bus.add(consoleDevice);
 	}
 
 	public long runCode() {
@@ -90,6 +93,12 @@ public class Main {
 			if (!main.comparisonMode && !main.runEmu816)
 				main.runJEmu816 = true;
 
+			if (main.wantConsole) {
+				var consoleDevice = new ConsoleDevice((int) 0xD000, 4);
+				main.m.addDevice(consoleDevice);
+				consoleDevice.showGUI(consoleDevice);
+			}
+
 			// emu816 initialization
 			main.init();
 			main.loadFile(main.runFilename);
@@ -101,10 +110,6 @@ public class Main {
 			main.m.reset();
 
 			System.out.println("running...");
-
-			if (main.wantConsole) {
-				// TODO initialize the console here.  Might need to pause.
-			}
 
 			long start = System.currentTimeMillis();
 			long instructionCount = main.runCode();
