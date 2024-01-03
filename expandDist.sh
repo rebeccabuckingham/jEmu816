@@ -3,6 +3,6 @@
 rm -rf distExpanded
 mkdir distExpanded
 cd distExpanded
-unzip ../lib/build/distributions/lib.zip
+unzip ../jEmu816/build/distributions/jEmu816.zip
 cd ..
 

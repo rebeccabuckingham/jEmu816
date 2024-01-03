@@ -1,9 +1,13 @@
 package jEmu816;
 
 import jEmu816.machines.RefMachine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simpleConsole.ConsoleDevice;
 
 public class Main {
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
 	public native int isStopped();
 	public native String step();
 	public native String getStatus();
@@ -18,6 +22,8 @@ public class Main {
 	boolean runEmu816 = false;
 	boolean comparisonMode = false;
 	String runFilename;
+
+	int startAddress = -1;
 
 	// for testing support
 	static {
@@ -38,6 +44,11 @@ public class Main {
 		System.out.println("runEmu816: " + runEmu816);
 		System.out.println("runJEmu816: " + runJEmu816);
 		System.out.println("comparisonMode: " + comparisonMode);
+		System.out.println("startAddress: " + startAddress);
+
+		if (startAddress != -1) {
+			m.getCpu().pc = startAddress;
+		}
 
 		while (true) {
 			instructionCount++;
@@ -74,7 +85,7 @@ public class Main {
 		return instructionCount;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main main = new Main();
 
 		if (args.length > 0) {
@@ -88,45 +99,76 @@ public class Main {
 					main.comparisonMode = true;
 				if (args[i].equalsIgnoreCase("-console"))
 					main.wantConsole = true;
+				if (args[i].equalsIgnoreCase("-startAddress")) {
+					i++;
+					main.startAddress = Integer.parseInt(args[i], 16);
+				}
 			}
 
 			if (!main.comparisonMode && !main.runEmu816)
 				main.runJEmu816 = true;
 
 			if (main.wantConsole) {
+				logger.info("creating console...");
 				var consoleDevice = new ConsoleDevice((int) 0xD000, 4);
 				main.m.addDevice(consoleDevice);
 				consoleDevice.showGUI(consoleDevice);
 			}
 
 			// emu816 initialization
-			main.init();
-			main.loadFile(main.runFilename);
-			main.reset();
+			if (main.runEmu816 || main.comparisonMode) {
+				main.init();
+				main.loadFile(main.runFilename);
+				main.reset();
+			}
+
+			boolean fileNameError = false;
 
 			// jemu816 initialization
-			S28Loader loader = new S28Loader();
-			loader.load(main.m, main.runFilename);
-			main.m.reset();
+			logger.info("run filename is: " + main.runFilename);
+			if (main.runFilename.endsWith(".s28")) {
+				logger.info("using S28Loader.");
+				S28Loader loader = new S28Loader();
+				loader.load(main.m, main.runFilename);
+			} else if (main.runFilename.endsWith(".pgz")) {
+				logger.info("using PgzLoader.");
+				PgzLoader.loadPgz(main.runFilename, main.m);
+			} else if (main.runFilename.endsWith(".prg")) {
+				logger.info("using PrgLoader.");
+				PrgLoader.loadPrg(main.runFilename, main.m);
+			} else {
+				logger.info("wtf?");
+				fileNameError = true;
+			}
 
-			System.out.println("running...");
+			if (!fileNameError) {
+				main.m.reset();
 
-			long start = System.currentTimeMillis();
-			long instructionCount = main.runCode();
-			long end = System.currentTimeMillis();
+				System.out.println("running...");
 
-			long cycles = main.m.cycles;
-			double seconds = (double) (end - start) / (double) 1000;
-			double cps = (double) cycles / seconds;
+				long start = System.currentTimeMillis();
+				long instructionCount = main.runCode();
+				long end = System.currentTimeMillis();
 
-			double mhz = cps / 1_000_000;
+				long cycles = main.m.cycles;
+				double seconds = (double) (end - start) / (double) 1000;
+				double cps = (double) cycles / seconds;
 
-			System.out.println("total instructions executed: " + instructionCount);
-			System.out.println("            seconds elapsed: " + seconds);
-			System.out.println("            approximate Mhz: " + mhz);
+				double mhz = cps / 1_000_000;
+
+				System.out.println("total instructions executed: " + instructionCount);
+				System.out.println("            seconds elapsed: " + seconds);
+				System.out.println("            approximate Mhz: " + mhz);
+
+				// test - remove
+				// System.out.println(Util.dump(main.m, 0xc000, 20));
+
+			} else {
+				System.out.println("You must specify either a s28 or pgz file to run!");
+			}
 		} else {
 			System.out.println("Usage: ");
-			System.out.println("filename.s28 <-emu816> <-jemu816> <-compare> <-console>");
+			System.out.println("[filename.s28 | filename.pgz] <-emu816> <-jemu816> <-compare> <-console>");
 			System.out.println("-emu816:  use emu816 emulation for cpu.");
 			System.out.println("-jemu816: use jemu816 emulation for cpu.");
 			System.out.println("-compare: compare two emulators.");

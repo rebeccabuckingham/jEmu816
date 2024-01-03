@@ -49,7 +49,10 @@ mainClassName = 'jEmu816/Main'
 
 application {
 	//applicationDefaultJvmArgs = ["-Djava.library.path=" + file("../libEmu816/build/lib/main/debug").absolutePath]
-  applicationDefaultJvmArgs = ["-Djava.library.path=" + file("../emu816/build/lib/main/debug").absolutePath]
+  applicationDefaultJvmArgs = ["-Djava.library.path=" + file("../emu816/build/lib/main/debug").absolutePath,
+		"-Xms1g",
+		"-Xmx8g"
+	]
 
 }
 

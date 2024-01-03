@@ -20,7 +20,7 @@ public abstract class CpuBase {
 
 	public boolean stopped = true;
 	public boolean irq = false;
-	public boolean trace = false;
+	public boolean trace = true;
 	public boolean interrupted = false;
 
 	public Machine machine;
@@ -128,6 +128,7 @@ public abstract class CpuBase {
 
 	private String addrModeStr;
 	private String operationStr;
+	private String tracePrefixInfo;
 
 	protected void traceAm(String addressingMode) {
 		if (trace) {
@@ -143,7 +144,7 @@ public abstract class CpuBase {
 
 	private void traceInstruction() {
 		// note: might need to snapshot the registers at the beginning of step().
-		logger.debug("--something goes here--");
+		System.out.println(tracePrefixInfo + " " + operationStr + ":" + addrModeStr);
 	}
 
 	public abstract void dispatch(int opCode);
@@ -153,7 +154,13 @@ public abstract class CpuBase {
 		cycles = 0;
 		bytes = 0;
 		long wallTime = System.nanoTime();
+
 		int opCode = fetchOpcode();
+
+		if (trace) {
+			tracePrefixInfo = this.toString();
+		}
+
 		dispatch(opCode);
 
 		if (trace) {
