@@ -50,10 +50,6 @@ public class Main {
 			m.getCpu().pc = startAddress;
 		}
 
-		if (m.getCpu().trace) {
-			m.getCpu().traceInstruction();
-		}
-
 		while (true) {
 			instructionCount++;
 

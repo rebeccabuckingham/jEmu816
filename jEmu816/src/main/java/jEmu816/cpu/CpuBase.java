@@ -145,13 +145,13 @@ public abstract class CpuBase {
 		bytes = 0;
 		long wallTime = System.nanoTime();
 
-		int opCode = fetchOpcode();
-
-		dispatch(opCode);
-
 		if (trace) {
 			traceInstruction();
 		}
+
+		int opCode = fetchOpcode();
+
+		dispatch(opCode);
 
 		machine.cycles += cycles;
 		pc = (pc + bytes) & 0xffff;
