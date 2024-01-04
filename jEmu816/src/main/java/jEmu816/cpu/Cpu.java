@@ -7,16 +7,48 @@ import static jEmu816.Util.swap;
 import static jEmu816.Util.toHex;
 
 
+import jEmu816.ByteSource;
+import jEmu816.Disassembler;
 import jEmu816.Machine;
 import jEmu816.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Cpu extends CpuBase {
+public class Cpu extends CpuBase implements ByteSource {
 	private static final Logger logger = LoggerFactory.getLogger(Cpu.class);
+
+	Disassembler disassembler;
 
 	public Cpu(Machine machine) {
 		super(machine);
+		this.disassembler = new Disassembler(this);
+	}
+
+	@Override
+	public int getByte(int addr) {
+		return machine.getByte(addr);
+	}
+
+	@Override
+	public void setByte(int addr, int byteValue) {
+		machine.setByte(addr, byteValue);
+	}
+
+	public String toString() {
+		// emu816 status: pc:00:f000 sp:0100 f:nvMXdIzc:E a:0000 x:0000 y:0000 dp:0000 pcByte: 78 cycles: 0
+		int b = machine.getByte(join(pbr, pc));
+
+		// disassemble *next* operation
+		String disassembly = disassembler.disassembleInstruction(join(pbr, pc));
+
+		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x ",
+												 	dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp) +
+													disassembly;
+	}
+
+	@Override
+	public void traceInstruction() {
+		System.out.println(toString());
 	}
 
 	@Override

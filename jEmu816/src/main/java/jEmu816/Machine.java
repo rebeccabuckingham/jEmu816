@@ -8,7 +8,7 @@ import jEmu816.cpu.CpuBase;
 
 import org.slf4j.Logger;
 
-public abstract class Machine {
+public abstract class Machine implements ByteSource {
 	public long cycles;
 	public CpuBase cpu;
 
@@ -59,26 +59,28 @@ public abstract class Machine {
 		}
 	}
 
+	@Override
 	public int getByte(int addr) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			return d.readByte(addr);
+			return d.getByte(addr);
 		} else {
 			return 0xff;
 		}
 	}
 
+	@Override
 	public void setByte(int addr, int byteValue) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			d.writeByte(addr, byteValue);
+			d.setByte(addr, byteValue);
 		}
 	}
 
 	public int getWord(int addr) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			return Util.join16(d.readByte(addr), d.readByte(addr + 1));
+			return Util.join16(d.getByte(addr), d.getByte(addr + 1));
 		} else {
 			return 0xffff;
 		}
@@ -87,8 +89,8 @@ public abstract class Machine {
 	public void setWord(int addr, int wordValue) {
 		Device d = findDeviceByAddress(addr);
 		if (d != null) {
-			d.writeByte(addr, wordValue & 0xff);
-			d.writeByte(addr + 1, Util.swap(wordValue) & 0xff);
+			d.setByte(addr, wordValue & 0xff);
+			d.setByte(addr + 1, Util.swap(wordValue) & 0xff);
 		}
 	}
 

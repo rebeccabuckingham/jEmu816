@@ -6,7 +6,7 @@ public class Rom extends Ram {
 	}
 
 	@Override
-	public void writeByte(int addr, int byteValue) {
+	public void setByte(int addr, int byteValue) {
 		// does nothing
 	}
 

@@ -9,12 +9,12 @@ public class Ram extends Device {
 	}
 
 	@Override
-	public int readByte(int addr) {
+	public int getByte(int addr) {
 		return memory[addr - baseAddress];
 	}
 
 	@Override
-	public void writeByte(int addr, int byteValue) {
+	public void setByte(int addr, int byteValue) {
 		memory[addr - baseAddress] = byteValue & 0xff;
 	}
 }

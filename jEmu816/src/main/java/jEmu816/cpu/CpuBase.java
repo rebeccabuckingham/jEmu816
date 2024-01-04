@@ -2,6 +2,8 @@ package jEmu816.cpu;
 
 import static jEmu816.Util.*;
 
+
+import jEmu816.Disassembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +46,6 @@ public abstract class CpuBase {
 		f.m = true;
 		f.x = true;
 		f.e = true;
-	}
-
-	public String toString() {
-		// emu816 status: pc:00:f000 sp:0100 f:nvMXdIzc:E a:0000 x:0000 y:0000 dp:0000 pcByte: 78 cycles: 0
-		int b = machine.getByte(join(pbr, pc));
-
-		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x",
-										dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp, b);
 	}
 
 	private void decSP() {
@@ -128,24 +122,20 @@ public abstract class CpuBase {
 
 	private String addrModeStr;
 	private String operationStr;
-	private String tracePrefixInfo;
 
 	protected void traceAm(String addressingMode) {
 		if (trace) {
-			addrModeStr = addressingMode;
+			//addrModeStr = addressingMode;
 		}
 	}
 
 	protected void traceOp(String operation) {
 		if (trace) {
-			operationStr = operation;
+			//operationStr = operation;
 		}
 	}
 
-	private void traceInstruction() {
-		// note: might need to snapshot the registers at the beginning of step().
-		System.out.println(tracePrefixInfo + " " + operationStr + ":" + addrModeStr);
-	}
+	public abstract void traceInstruction();
 
 	public abstract void dispatch(int opCode);
 
@@ -156,10 +146,6 @@ public abstract class CpuBase {
 		long wallTime = System.nanoTime();
 
 		int opCode = fetchOpcode();
-
-		if (trace) {
-			tracePrefixInfo = this.toString();
-		}
 
 		dispatch(opCode);
 

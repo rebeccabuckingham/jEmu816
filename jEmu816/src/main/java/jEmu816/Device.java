@@ -7,8 +7,8 @@ public abstract class Device {
 	protected final int baseAddress;
 	protected final int addressSize;
 
-	public abstract int readByte(int addr);
-	public abstract void writeByte(int addr, int byteValue);
+	public abstract int getByte(int addr);
+	public abstract void setByte(int addr, int byteValue);
 
 	public Device(String name, int baseAddress, int addressSize) {
 		this.name = name;

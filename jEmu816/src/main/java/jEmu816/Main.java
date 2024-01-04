@@ -50,6 +50,10 @@ public class Main {
 			m.getCpu().pc = startAddress;
 		}
 
+		if (m.getCpu().trace) {
+			m.getCpu().traceInstruction();
+		}
+
 		while (true) {
 			instructionCount++;
 
@@ -145,6 +149,8 @@ public class Main {
 				main.m.reset();
 
 				System.out.println("running...");
+
+
 
 				long start = System.currentTimeMillis();
 				long instructionCount = main.runCode();

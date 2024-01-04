@@ -53,7 +53,7 @@ public class ConsoleDevice extends Device {
 	 * readMemory() in this case is how the emulated machine gets input from the keyboard
 	 */
 	@Override
-	public int readByte(int address) {
+	public int getByte(int address) {
 		int ea = effectiveAddress(address);
 		int value = 0;
 
@@ -76,7 +76,7 @@ public class ConsoleDevice extends Device {
 	 */
 
 	@Override
-	public void writeByte(int address, int value) {
+	public void setByte(int address, int value) {
 		int ea = effectiveAddress(address);
 		char c = (char) value;
 
