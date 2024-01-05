@@ -53,4 +53,13 @@ public class RefMachine extends Machine {
 		cpu.reset();
 	}
 
+	@Override
+	public void handleDevices() {
+		// this is where we update the screen, process audio, whatever.
+	}
+
+	@Override
+	public void generateInterrupt(int num) {
+		// not even sure what this entails yet.
+	}
 }

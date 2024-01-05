@@ -30,7 +30,11 @@ public abstract class Machine implements ByteSource {
 		return cpu;
 	}
 
-  public void reset() {
+	public void setTrace(boolean trace) {
+		cpu.trace = trace;
+	}
+
+	public void reset() {
     cpu.reset();
   }
 
@@ -96,5 +100,42 @@ public abstract class Machine implements ByteSource {
 
 	public String toString() {
 		return cpu.toString() + " cycles: " + cycles;
+	}
+
+	public abstract void handleDevices();
+	public abstract void generateInterrupt(int num);
+
+	private boolean enableInterruptProcessing = false;
+	private long interruptTimerInterval = 0;
+
+	public void run() {
+		long lastInterrupt = System.nanoTime();
+		long instructionStart;
+		long elapsedTime;
+
+		// todo need number of nanoseconds for one clock cycle
+		long nanosecondsPerCycle = 0;
+
+		cpu.stopped = false;
+		while (!cpu.stopped) {
+			instructionStart = System.nanoTime();
+			cpu.step();
+			handleDevices();
+
+			// todo add interrupt processing here
+			if (enableInterruptProcessing &&
+				(System.nanoTime() - lastInterrupt) > interruptTimerInterval) {
+				// i = interrupt disable
+				if (!cpu.f.i) {
+					generateInterrupt(0);
+					lastInterrupt = System.nanoTime();
+				}
+			}
+
+//			// todo wait until elapsedTime >= cpu.cycles * nanosecondsPerCycle
+//			do {
+//				elapsedTime = System.nanoTime() - instructionStart;
+//			} while (elapsedTime < cpu.cycles * nanosecondsPerCycle);
+		}
 	}
 }
