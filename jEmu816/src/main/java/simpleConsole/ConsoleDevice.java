@@ -8,7 +8,10 @@ import jEmu816.Util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * this is a *really* simple console that
@@ -48,6 +51,8 @@ public class ConsoleDevice extends Device {
 
 	public boolean echoMode = false;
 	public boolean noCpuMode = false;
+
+	public AtomicBoolean lock = new AtomicBoolean(true);
 
 	/**
 	 * readMemory() in this case is how the emulated machine gets input from the keyboard
@@ -102,6 +107,30 @@ public class ConsoleDevice extends Device {
 		frame.getContentPane().add(console, BorderLayout.CENTER);
 		frame.pack();
 		frame.setVisible(true);
+
+		frame.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				lock.set(false);
+				System.out.println("*** check for console ***");
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+
+			}
+		});
+
 	}
 
 	public void handleKeyEcho(char c) {

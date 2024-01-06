@@ -6,9 +6,8 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+import simpleConsole.ConsoleDevice;
 
-
-import java.sql.Ref;
 import java.util.Map;
 
 public class Main {
@@ -17,9 +16,11 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		ArgumentParser parser = ArgumentParsers.newFor("Main").build()
 			.description("65816 Emulator");
+
 		parser.addArgument("filename")
 			.type(String.class)
 			.help("name of file to run, can be .S28, .pgz, or .prg.");
+
 		parser.addArgument("-startAddress")
 			.type(String.class)
 			.setDefault(-1)
@@ -29,6 +30,11 @@ public class Main {
 			.type(Boolean.class)
 			.action(Arguments.storeTrue())
 			.help("trace execution to log file.");
+
+		parser.addArgument("-console")
+			.type(Boolean.class)
+			.action(Arguments.storeTrue())
+			.help("creates a simple console for keyboard input and screen output.");
 
 //		parser.addArgument("--machineType")
 //			.type(String.class)
@@ -45,6 +51,19 @@ public class Main {
 				System.out.println("error: filename must end in .s28, .pgz, or .prg.");
 			} else {
 				Main main = new Main(res.getAttrs());
+
+				if (res.getBoolean("console")) {
+					System.out.println("creating console.");
+					ConsoleDevice consoleDevice = new ConsoleDevice((int) 0xD000, 4);
+					main.machine.addDevice(consoleDevice);
+					consoleDevice.showGUI(consoleDevice);
+
+					// hold this thread until the console is up.
+					synchronized (consoleDevice.lock) {
+						while (consoleDevice.lock.get()) ;
+					}
+				}
+
 				main.machine.run();
 			}
 		} catch(ArgumentParserException e) {
@@ -77,7 +96,7 @@ public class Main {
 
 	public Main(Map<String, Object> options) throws Exception {
 		this.options = options;
-		showOptions();
+		//showOptions();
 
 		RefMachine m = new RefMachine();
 		machine = m;
