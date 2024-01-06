@@ -128,8 +128,8 @@ public class OldMain {
 			logger.info("run filename is: " + main.runFilename);
 			if (main.runFilename.endsWith(".s28")) {
 				logger.info("using S28Loader.");
-				S28Loader loader = new S28Loader();
-				loader.load(main.m, main.runFilename);
+				//S28Loader loader = new S28Loader();
+				//loader.load(main.m, main.runFilename);
 			} else if (main.runFilename.endsWith(".pgz")) {
 				logger.info("using PgzLoader.");
 				PgzLoader.loadPgz(main.runFilename, main.m);

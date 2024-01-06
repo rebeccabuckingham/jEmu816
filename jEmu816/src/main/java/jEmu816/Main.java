@@ -14,13 +14,13 @@ import java.util.Map;
 public class Main {
 	Machine machine;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		ArgumentParser parser = ArgumentParsers.newFor("Main").build()
 			.description("65816 Emulator");
 		parser.addArgument("filename")
 			.type(String.class)
 			.help("name of file to run, can be .S28, .pgz, or .prg.");
-		parser.addArgument("--startAddress")
+		parser.addArgument("-startAddress")
 			.type(String.class)
 			.setDefault(-1)
 			.help("address to begin execution, overrides reset vector.");
@@ -75,7 +75,7 @@ public class Main {
 		});
 	}
 
-	public Main(Map<String, Object> options) {
+	public Main(Map<String, Object> options) throws Exception {
 		this.options = options;
 		showOptions();
 
@@ -84,18 +84,27 @@ public class Main {
 
 		String filename = (String) options.get("filename");
 		if (filename.toLowerCase().endsWith(".s28")) {
-			// s28Loader
+			S28Loader.load(filename, m);
 		} else if (filename.toLowerCase().endsWith(".pgz")) {
-			// pgzLoader
+      PgzLoader.loadPgz(filename, m);
 		} else if (filename.toLowerCase().endsWith(".prg")) {
-			// prgLoader
+      PrgLoader.loadPrg(filename, m);
 		}
 
 		m.setTrace((Boolean) options.get("trace"));
 		m.reset();
 
-		// todo handle startaddress option here.
+		// allow user to override the reset vector
+		int startAddress = getStartAddress();
+		if (startAddress != -1) {
+			if (startAddress > 0xffff) {
+				m.getCpu().pbr = startAddress >> 16;
+			}
+			m.getCpu().pc = startAddress & 0xffff;
+		}
 
-		// that's it.  main() is already set to call machine.run().
+		System.out.println("starting execution at: " +
+												 Util.fullAddressToHex(
+													 Util.join(m.getCpu().pbr, m.getCpu().pc)));
 	}
 }

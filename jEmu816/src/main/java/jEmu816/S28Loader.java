@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class S28Loader {
 	private static final Logger logger = LoggerFactory.getLogger(S28Loader.class);
@@ -44,7 +45,7 @@ public class S28Loader {
 
 	private int offset = 0;
 
-	public void load(Machine m, String filename) {
+	private void _load(Machine m, String filename) {
 		logger.info("loading: " + filename);
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 			reader.lines().forEach(line -> {
@@ -72,7 +73,14 @@ public class S28Loader {
 		}
 	}
 
-	public S28Loader() {
+	public static void load(String filename, Machine m) {
+		logger.info("loading: " + filename);
+		S28Loader loader = new S28Loader();
+
+		loader._load(m, filename);
+	}
+
+	private S28Loader() {
 
 	}
 }

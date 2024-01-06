@@ -64,40 +64,4 @@ public class Util {
 
 		return dumpString;
 	}
-
-	static class Florence extends Machine {
-		public Florence(CpuBase cpu) {
-			super();
-			setCpu(new Cpu(this));
-			this.addDevice(new Ram("ram 0000", 0x0000, 0x0200));
-			this.addDevice(new Ram("ram 0200", 0x0200, 0x0200));
-		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		System.out.println("              swap(0x1234): " + toHex(swap(0x1234), 4));
-		System.out.println("               low(0x1234): " + toHex(low(0x1234), 4));
-		System.out.println("              high(0x1234): " + toHex(high(0x1234), 4));
-		System.out.println("        join16(0x34, 0x12): " + toHex(join16(0x34, 0x12), 4));
-		System.out.println("      join24(0x01, 0x2345): " + toHex(join(0x01, 0x2345), 6));
-		System.out.println("       bankToAddress(0x00): " + toHex(bank(0x00), 6));
-		System.out.println("       bankToAddress(0x04): " + toHex(bank(0x04), 6));
-		System.out.println("       bankToAddress(0x80): " + toHex(bank(0x80), 6));
-		System.out.println("       bankToAddress(0xff): " + toHex(bank(0xff), 6));
-		System.out.println("fullAddressToHex(0x012345): " + fullAddressToHex(0x012345));
-
-		var machine = new Florence(null);
-		for (int i = 0; i < 1024; i++) {
-			machine.setByte(i, i & 0xff);
-		}
-
-		System.out.println("\ndump test:");
-		System.out.println(dump(machine, 0, 1024));
-
-		fillMemory(machine, 0, 1024, 0x80);
-
-		System.out.println("\nfillMemory dump test:");
-		System.out.println(dump(machine, 0, 1024));
-
-	}
 }
