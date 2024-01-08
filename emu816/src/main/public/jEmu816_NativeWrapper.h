@@ -55,6 +55,118 @@ JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_reset
 JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_init
   (JNIEnv *, jobject);
 
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setByte
+ * Signature: (II)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setByte
+  (JNIEnv *, jobject, jint, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    getByte
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_getByte
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    resetCycles
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_resetCycles
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setP
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setP
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    getP
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_getP
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setE
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setE
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setPBR
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setPBR
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setPC
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setPC
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setSP
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setSP
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setDBR
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setDBR
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setDP
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setDP
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setA
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setA
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setX
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setX
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     jEmu816_NativeWrapper
+ * Method:    setY
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setY
+  (JNIEnv *, jobject, jint);
+
 #ifdef __cplusplus
 }
 #endif

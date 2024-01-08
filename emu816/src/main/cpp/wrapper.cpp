@@ -4,15 +4,17 @@
 #include <fstream>
 #include <string>
 #include "emu816.h"
-//#include "jEmu816_Main.h"
 #include "jEmu816_NativeWrapper.h"
 
 using namespace std;
 
-#define	RAM_SIZE	(512 * 1024)
-#define MEM_MASK	(512 * 1024L - 1)
+#define	RAM_SIZE	(0x1000000)
+#define MEM_MASK	(0x1000000 - 1)
 
 void load(const char *filename);
+
+typedef unsigned short Word;
+typedef unsigned char Byte;
 
 // just tests that the library indeed works
 JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_isStopped
@@ -70,6 +72,77 @@ JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_reset
   (JNIEnv *env, jobject obj) {
     emu816::reset(0);
   }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setByte
+  (JNIEnv *env, jobject obj, jint addr, jint value) {
+    emu816::setByte(addr, (Byte) value & 0xff);
+  }
+
+JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_getByte
+  (JNIEnv *env, jobject obj, jint addr) {
+    return emu816::getByte(addr);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_resetCycles
+  (JNIEnv *, jobject) {
+    emu816::cycles = 0;
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setP
+  (JNIEnv *, jobject, jint value) {
+    emu816::p.b = (Byte) (value & 0xff);
+  }
+
+JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_getP
+  (JNIEnv *, jobject) {
+    return (jint) emu816::p.b; 
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setE
+  (JNIEnv *, jobject, jint value) {
+    emu816::e = (Byte) (value != 0 ? 1 : 0);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setPBR
+  (JNIEnv *, jobject, jint v) {
+    emu816::pbr = (Byte) (v & 0xff);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setPC
+  (JNIEnv *, jobject, jint v) {
+    emu816::pc = (Word) (v & 0xffff);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setSP
+  (JNIEnv *, jobject, jint v) {
+    emu816::sp.w = (Word) (v & 0xffff);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setDBR
+  (JNIEnv *, jobject, jint v) {
+    emu816::dbr = (Byte) (v & 0xff);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setDP
+  (JNIEnv *, jobject, jint v) {
+    emu816::dp.w = (Word) (v & 0xffff);
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setA
+  (JNIEnv *, jobject, jint v) {
+    emu816::a.w = v;
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setX
+  (JNIEnv *, jobject, jint v) {
+    emu816::x.w = v;
+  }
+
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_setY
+  (JNIEnv *, jobject, jint v) {
+    emu816::y.w = v;    
+  }
+
 
 //==============================================================================
 // S19/28 Record Loader

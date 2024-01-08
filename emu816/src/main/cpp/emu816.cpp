@@ -76,8 +76,8 @@ void emu816::getStatus(char *buffer) {
   flags[9] = e ? 'E' : 'e';
   flags[10] = '\0';
 
-  sprintf(buffer, "pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x pcByte: %02x cycles: %d",
-    dbr, pc, sp, flags, a, x, y, dp, b, cycles
+  sprintf(buffer, "pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x dbr:%02x cycles: %d",
+    pbr, pc, sp, flags, a, x, y, dp, dbr, cycles
   );
 }
 

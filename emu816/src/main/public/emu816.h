@@ -51,6 +51,8 @@ public:
 	static void step();
   static void getStatus(char *buffer);
 
+  static unsigned long cycles;
+
 	INLINE static unsigned long getCycles()
 	{
 		return (cycles);
@@ -61,7 +63,7 @@ public:
 		return (stopped);
 	}
 
-private:
+//private:
 	static union FLAGS {
 		struct {
 			Bit				f_c : 1;
@@ -88,7 +90,7 @@ private:
 
 	static bool		stopped;
 	static bool		interrupted;
-	static unsigned long cycles;
+
 	static bool		trace;
 
 	emu816();
