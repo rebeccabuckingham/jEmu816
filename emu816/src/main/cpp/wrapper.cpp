@@ -4,7 +4,8 @@
 #include <fstream>
 #include <string>
 #include "emu816.h"
-#include "jEmu816_Main.h"
+//#include "jEmu816_Main.h"
+#include "jEmu816_NativeWrapper.h"
 
 using namespace std;
 
@@ -14,20 +15,20 @@ using namespace std;
 void load(const char *filename);
 
 // just tests that the library indeed works
-JNIEXPORT jint JNICALL Java_jEmu816_Main_isStopped
+JNIEXPORT jint JNICALL Java_jEmu816_NativeWrapper_isStopped
   (JNIEnv *, jobject) {
     return emu816::isStopped();
   }
 
 // initializes the emu816 memory
-JNIEXPORT void JNICALL Java_jEmu816_Main_init
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_init
   (JNIEnv *env, jobject obj) {
     puts("emu816 wrapper init");
     emu816::setMemory(MEM_MASK, RAM_SIZE, NULL);
   }
 
 // calls emu816::step() and returns a status string
-JNIEXPORT jstring JNICALL Java_jEmu816_Main_step
+JNIEXPORT jstring JNICALL Java_jEmu816_NativeWrapper_step
   (JNIEnv *env, jobject obj) {
     char *buffer = (char *) malloc(128);
     strcpy(buffer, "");
@@ -42,7 +43,7 @@ JNIEXPORT jstring JNICALL Java_jEmu816_Main_step
     return javaString;
   }
 
-JNIEXPORT jstring JNICALL Java_jEmu816_Main_getStatus
+JNIEXPORT jstring JNICALL Java_jEmu816_NativeWrapper_getStatus
   (JNIEnv *env, jobject obj) {
     char *buffer = (char *) malloc(128);
     strcpy(buffer, "");
@@ -56,7 +57,7 @@ JNIEXPORT jstring JNICALL Java_jEmu816_Main_getStatus
   }  
 
 // loads an S28 file into memory
-JNIEXPORT void JNICALL Java_jEmu816_Main_loadFile
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_loadFile
   (JNIEnv *env, jobject obj, jstring filename) {
     const char* str = env->GetStringUTFChars(filename, 0);
     printf("emu816 loadFile filename is '%s'\n", str);
@@ -65,7 +66,7 @@ JNIEXPORT void JNICALL Java_jEmu816_Main_loadFile
   }
 
 // resets the emulator
-JNIEXPORT void JNICALL Java_jEmu816_Main_reset
+JNIEXPORT void JNICALL Java_jEmu816_NativeWrapper_reset
   (JNIEnv *env, jobject obj) {
     emu816::reset(0);
   }

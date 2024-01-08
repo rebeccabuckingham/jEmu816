@@ -22,7 +22,7 @@ public abstract class CpuBase {
 
 	public boolean stopped = true;
 	public boolean irq = false;
-	public boolean trace = true;
+	public boolean trace = false;
 	public boolean interrupted = false;
 
 	public Machine machine;

@@ -470,7 +470,7 @@ public class Cpu extends CpuBase implements ByteSource {
 	}
 
 	private void branch(int ea, boolean condition) {
-		//logger.debug("branch: ea:" + toHex(ea, 4) + ", condition: " + condition);
+		logger.debug("branch: ea:" + toHex(ea, 4) + ", condition: " + condition);
 		if (condition) {
 			if (f.e && ((pc ^ ea) & 0xff00) != 0) ++cycles;
 			pc = ea;
@@ -531,8 +531,10 @@ public class Cpu extends CpuBase implements ByteSource {
 	// 0x20|jsr|absl|3|6|--------
 	private void op_jsr(int ea) {
 		if (trace) { traceOp("jsr"); }
-		pushWord(pc - 1);
+		//pushWord(pc - 1);
+		pushWord(pc);
 		pc = ea;
+		bytes = 0;
 		addCycles(4);
 	}
 
@@ -803,6 +805,11 @@ public class Cpu extends CpuBase implements ByteSource {
 		if (trace) { traceOp("jmp"); }
 		pbr = low(ea >> 16);
 		pc = ea;
+
+		bytes = 0;
+		logger.debug("op_jmp(" + join(pbr, pc) + "), bytes = " + bytes);
+
+
 		addCycles(1);
 	}
 
@@ -859,6 +866,7 @@ public class Cpu extends CpuBase implements ByteSource {
 	private void op_rts(int ea) {
 		if (trace) { traceOp("rts"); }
 		addCycles(6);
+		addBytes(1);
 		pc = (popWord() + 1) & 0xffff;
 	}
 

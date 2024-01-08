@@ -90,6 +90,14 @@ public class Register {
 		}
 	}
 
+	public int getRawValue() {
+		return value;
+	}
+
+	public void setRawValue(int v) {
+		value = v;
+	}
+
 	public int getValue() {
 		// honors e, m and  x (may need to and with 0xFF in 8-bit mode)
 		if (cpu.f.e ||

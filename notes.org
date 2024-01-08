@@ -1,0 +1,60 @@
+* DONE Looks like the disassembler is working (!)
+* DONE reorganize/refactor Main class or rename and replace it.
+  - want one w/o emu816 stuff
+* TODO need to review how some operations work, mainly ones that modify PC
+  - jmp/jsr/rts and any long versions of these
+  - branches
+* TODO look for something like Tigr already written for Java
+  - JOGL: https://www.tutorialspoint.com/jogl/index.htm
+  - LWJGL: https://github.com/lwjgl & https://www.lwjgl.org
+  - libGDX
+** comparison:
+  JOGL is very close to the OpenGL API.  It only does graphics, so cross that one off.
+  LWJGL is focused on game development overall, so has input and audio, too.
+  libGDX is more beginner friendly, but is more of a framework than a library.
+** choice comes down between LWJGL and libGDX. --> asking Mario what he thinks.
+
+* not sure I'm happy with the sequence of things.
+  - the model right now for operands is to get the necessary bytes, then move pc later.
+    this is most likely not how the '816 actually works.  I believe it moves pc every time
+    it grabs a byte from where PC is set.
+    -- so far a web search shows that I'm right: PC has its own incrementer, it only fetches
+      from the instruction stream, and it increments automatically.
+    -- also, different parts of what the processor does handles the cycle updating as well, so
+      incrementing PC, takes a cycle.
+* have a source of processor tests (json format)
+  - nevermind, they're broken.
+
+* need to generate a source of processor tests (DONE)
+  - need to use opCodeList.dat to generate them
+    *note* may want to hit http://www.6502.org/tutorials/65c816opcodes.html again to 
+    get better byte & cycle count info!  See special +/i stuff in the len & cycles fields.
+  - byte counts in opCodeList.dat is right, except for immm and immx addressing modes
+    in these addessing modes, the byte counts represent the 8-bit version, and an extra
+    byte is required for the 16-bit version.
+  - for expected results, addressing mode / operation matters...
+    ex: if testing 'sta', we need to see if the destination was written correctly.
+    this is harder than it looks.  [might be able to track memory operations by emu816]
+  - special cases to think about:
+    - cycle counts get upped in certain circumstances (page wrap, etc)
+    - pc can roll over in a fetch
+  - otherwise, to autogenerate:
+    - there are 10 cpu modes to test:
+      binary, emulation
+      binary, native, a8, x8
+      binary, native, a8, x16
+      binary, native, a16, x8
+      binary, native, a16, x16
+      decimal, emulation
+      decimal, native, a8, x8
+      decimal, native, a8, x16
+      decimal, native, a16, x8
+      decimal, native, a16, x16
+    - there are 255 opcodes to test: 0x00 through 0xfe (can skip WDM)
+* TODO using tests created in cputests.json, get expected results using different emulator.
+  the json object has :name, :initial, :expected...
+  'expected' needs to be filled in from the other emulator.
+  *note* be sure to fill in byteCount and cycleCount in expected results.
+** TODO will need to create a new output file that includes expected results.
+* TODO using the new file *with* expected results, compare with my emulator.
+  - log any errors and then fix the problems.

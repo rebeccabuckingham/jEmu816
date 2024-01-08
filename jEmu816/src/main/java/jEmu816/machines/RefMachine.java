@@ -1,10 +1,5 @@
 package jEmu816.machines;
 
-import static jEmu816.Util.*;
-
-
-import jEmu816.S28Loader;
-import jEmu816.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +43,6 @@ public class RefMachine extends Machine {
 
 		//fillMemory(this, 0, 0xD000, 0x00);
 		setCpu(cpu);
-
 
 		cpu.reset();
 	}
