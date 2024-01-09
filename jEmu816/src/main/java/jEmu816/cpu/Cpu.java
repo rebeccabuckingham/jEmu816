@@ -36,13 +36,13 @@ public class Cpu extends CpuBase implements ByteSource {
 
 	public String toString() {
 		// emu816 status: pc:00:f000 sp:0100 f:nvMXdIzc:E a:0000 x:0000 y:0000 dp:0000 pcByte: 78 cycles: 0
-		int b = machine.getByte(join(pbr, pc));
+		// int b = machine.getByte(join(pbr, pc));
 
 		// disassemble *next* operation
 		String disassembly = disassembler.disassembleInstruction(join(pbr, pc));
 
-		return String.format("pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x ",
-												 	dbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp) +
+		return String.format("pbr:%02x pc:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x dbr:%02x cycles:%d ",
+												 	pbr, pc, sp, f.toString(), a.getWord(), x.getWord(), y.getWord(), dp, dbr, cycles) +
 													disassembly;
 	}
 
@@ -319,8 +319,6 @@ public class Cpu extends CpuBase implements ByteSource {
 	// 0x00|brk|immb|2|7|----di--|+1 if e=0
 	private void op_brk(int ea) {
 		if (trace) { traceOp("brk"); }
-		addCycles(7);
-
 		if (f.e) {
 			pushWord(pc);
 			pushByte(f.getP() | 0x10);
@@ -330,7 +328,8 @@ public class Cpu extends CpuBase implements ByteSource {
 			pbr = 0;
 
 			pc = machine.getWord(0xfffe);
-			cycles += 7;
+			bytes = 0;
+			addCycles(7);
 		}
 		else {
 			pushByte(pbr);
@@ -338,11 +337,12 @@ public class Cpu extends CpuBase implements ByteSource {
 			pushByte(f.getP());
 
 			f.i = true;
-			f.d = true;
+			f.d = false;
 			pbr = 0;
 
 			pc = machine.getWord(0xffe6);
-			cycles += 8;
+			bytes = 0;
+			addCycles(8);
 		}
 	}
 

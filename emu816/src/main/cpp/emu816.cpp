@@ -72,11 +72,11 @@ void emu816::getStatus(char *buffer) {
   flags[5] = p.f_i ? 'I' : 'i';
   flags[6] = p.f_z ? 'Z' : 'z';
   flags[7] = p.f_c ? 'C' : 'c';
-  flags[8] = ':';
+  flags[8] = '-';
   flags[9] = e ? 'E' : 'e';
   flags[10] = '\0';
 
-  sprintf(buffer, "pc:%02x:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x dbr:%02x cycles: %d",
+  sprintf(buffer, "pbr:%02x pc:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x dbr:%02x cycles:%d",
     pbr, pc, sp, flags, a, x, y, dp, dbr, cycles
   );
 }

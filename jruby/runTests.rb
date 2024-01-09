@@ -1,84 +1,136 @@
 include Java
 require 'json'
 
-def compare(name, item, me, you)
-  if !you.eql?(me)
-    if me.class.eql?(Integer)
-      me = me.to_s(16)
-      you = you.to_s(16)
+def setFlagsFromStr(str)
+  p = 0
+  str[0..7].chars.each_with_index do |c, idx|
+    p += (2 ** (7 - idx)) if c.eql?(c.upcase)
+  end
+
+  $cpu.f.setP(p)
+  $cpu.f.e = str[9].eql?('E') ? true : false;
+end
+
+def setRegisters(str)
+  puts "setRegisters: #{str}"
+  pc = 0
+  pbr = 0
+  str.split(' ').each do |item|
+    (name, value) = item.split(':')
+    case name
+    when 'pbr'
+      pbr = value.to_i(16)
+      $cpu.pbr = pbr
+    when 'pc'
+      pc = value.to_i(16)
+      $cpu.pc = pc
+    when 'sp'
+      $cpu.sp = value.to_i(16)
+    when 'f'
+      setFlagsFromStr(value)
+    when 'a'
+      $cpu.a.setRawValue(value.to_i(16))
+    when 'x'
+      $cpu.x.setRawValue(value.to_i(16))
+    when 'y'
+      $cpu.y.setRawValue(value.to_i(16))
+    when 'dp'
+      $cpu.dp = value.to_i(16)
+    when 'dbr'
+      $cpu.dbr = value.to_i(16)
     end
-    $logger.info("testName: #{name}, item: #{item}, control: #{you}, test: #{me}")
-    @ok = false
+  end
+  [pbr, pc]
+end
+
+
+def setupTest(testJson)
+  # reset cpu.cycles
+  $cpu.cycles = 0
+  # set up registers & flags, including e -> returns [pbr, pc]
+  (pbr, pc) = setRegisters(testJson['initial']['status'])
+
+  addr = $util.join(pbr, pc)
+  
+  # poke code
+  puts "poking code at: #{pbr.to_s(16)}:#{pc.to_s(16)}, addr: #{addr.to_s(16)}"
+  testJson['initial']['code'].each_with_index do |b, idx|
+    $machine.setByte(addr + idx, b.to_i(16))
+  end
+
+  # poke ram  
+  testJson['initial']['ram'].each_with_index do |pair, idx|
+    addr = pair[0].to_i(16)
+    value = pair[1].to_i(16)
+    puts "poking ram at: #{addr.to_s(16)}, #{value.to_s(16)}"
+    $machine.setByte(addr, value)
   end
 end
 
-def runTest(testJson)
+# $machine and $cpu are already set.
+def runTest(testJson, outFile)
   @ok = true
   name = testJson['name']
   initialState = testJson['initial']
-  finalState = testJson['final']
+  expectedState = testJson['expected']
+  finalState = {}
 
-  $cpu.pc = initialState['pc']
-  $cpu.sp = initialState['s']
-  $cpu.pbr = initialState['pbr']
-  $cpu.dbr = initialState['dbr']
-  $cpu.dp = initialState['d']
-  $cpu.x.setRawValue(initialState['x'])
-  $cpu.y.setRawValue(initialState['y'])
-  $cpu.a.setRawValue(initialState['a'])
-  $cpu.f.setP(initialState['p'])
-  $cpu.f.e = initialState['e'] == 1
+  setupTest(testJson)
 
-  cpuStatusStart = "cpu initial state: #{$cpu.toString()}"
-
-  initialState['ram'].each do |entry|
-    $machine.setByte(entry[0], entry[1])
-  end
-
+  puts "before step(): #{$cpu.toString()}"
   $cpu.step()
+  puts " after step(): #{$cpu.toString()}"
 
-  cpuStatusEnd = "  cpu final state: #{$cpu.toString()}"
+  # compare results
+  statusRaw = $cpu.toString()
+  #puts "raw: #{statusRaw}"
 
-  compare(name, 'pc', $cpu.pc, finalState['pc'])
-  compare(name, 'sp', $cpu.sp, finalState['s'])
-  compare(name, 'pbr', $cpu.pbr, finalState['pbr'])
-  compare(name, 'dbr', $cpu.dbr, finalState['dbr'])
-  compare(name, 'dp', $cpu.dp, finalState['d'])
-  compare(name, 'a', $cpu.a.getRawValue(), finalState['a'])
-  compare(name, 'x', $cpu.x.getRawValue(), finalState['x'])
-  compare(name, 'y', $cpu.y.getRawValue(), finalState['y'])
-  compare(name, 'p', $cpu.f.getP(), finalState['p'])
-  compare(name, 'e', $cpu.f.e, finalState['e'] == 1)
+  _cycles = statusRaw.index('cycles:')
+  _spaceAfter = statusRaw.index(' ', _cycles)
+  status = statusRaw[0..._spaceAfter]
 
-  finalState['ram'].each do |entry|
-    compare(name, "memory #{entry[0]}", $machine.getByte(entry[0]), entry[1])
+  #puts "status: '#{status}'"
+  
+  finalState['status'] = status
+  @ok = false if !status.eql?(expectedState['status'])
+
+  # compare ram here
+  actualRam = []
+  expectedState['ram'].each do |pair|
+    address = pair[0].to_i(16)
+    evalue = pair[1].to_i(16)
+    value = $machine.getByte(address)
+    actualRam.push([address.to_s(16), value.to_s(16)])
+    @ok = false if (evalue != value)
   end
+  finalState['ram'] = actualRam
 
-  if !@ok
-    $logger.info('--------------------------------------------------------------')
-    $logger.error("test #{name} failed.")
-    $logger.debug(cpuStatusStart)
-    $logger.debug(cpuStatusEnd)
-    $logger.info('--------------------------------------------------------------')
+  testJson['finalState'] = finalState
+  testJson['result'] = @ok
 
-  end
+  outFile.puts testJson.to_json
 
   @ok
 end
 
-def runTestFile(testFilename, stopAfter)
+def runTestFile(testFilename, resultsFilename, stopAfter)
   good = 0
   bad = 0
-  testBatch = JSON.parse(File.read(testFilename))
-  testBatch.each_with_index do |testJson, idx|
-    if runTest(testJson)
-      good += 1
-    else
-      bad += 1
+  File.open(resultsFilename, "wt") do |out|
+    File.read(testFilename).each_line do |test|
+      testJson = JSON.parse(test)
+      if runTest(testJson, out)
+        good += 1
+      else
+        bad += 1
+      end
+
+      if stopAfter && (bad >= stopAfter)
+        break
+      end
     end
-    break if (bad >= stopAfter)
+    [good, bad]
   end
-  [good, bad]
 end
 
 ##### main
@@ -94,31 +146,28 @@ end
 
 java_import 'jEmu816.machines.TestMachine'
 
+stopAfter = nil
+
 if true
   $logger = Java::OrgSlf4j::LoggerFactory.getLogger("TestRunner")
 
   $machine = TestMachine.new
-  #$util = Java::JEmu816::Util
+  $util = Java::JEmu816::Util
   $machine.reset()
   $cpu = $machine.getCpu()
 
-  totalGood = 0
-  totalBad = 0
+  testFile = File.dirname(__dir__) + "/cpuTests/cputests_with_expected_results.json"
+  resultsFile = File.dirname(__dir__) + "/cpuTests/cputests_with_final_results.json"
 
-  testDir = "/Users/rebecca/ProcessorTests/65816/v1"
-  #Dir.glob("#{testDir}/*").each do |testFile| 
-    testFile = "/Users/rebecca/ProcessorTests/65816/v1/a9.n.json"
-    stopAfter = 1
+  (good, bad) = runTestFile(testFile, resultsFile, stopAfter)
+  $logger.info("testfile: #{File.basename(testFile)}, #{good + bad} tests, good tests = #{good}, bad tests = #{bad}")
 
-    (good, bad) = runTestFile(testFile, stopAfter)
-    $logger.info("testfile: #{File.basename(testFile)}, #{good + bad} tests, good tests = #{good}, bad tests = #{bad}")
+  totalTests = good + bad
+  pctBad = (bad.to_f / totalTests.to_f) * 100
+  pctGood = (good.to_f / totalTests.to_f) * 100
 
-    totalGood += good
-    totalBad += bad
-  #end
-
-  $logger.info("testing complete.")
-  $logger.info("#{totalGood + totalBad} tests, total good tests = #{totalGood}")
-  $logger.info("     total bad tests = #{totalBad}")
+  $logger.info("testing complete.  #{totalTests} tests run.")
+  $logger.info("good tests: #{good} (#{pctGood}) %")
+  $logger.info(" bad tests: #{bad} (#{pctBad}) %")
 end
 

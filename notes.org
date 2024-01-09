@@ -58,3 +58,6 @@
 ** TODO will need to create a new output file that includes expected results.
 * TODO using the new file *with* expected results, compare with my emulator.
   - log any errors and then fix the problems.
+
+
+* *status* 88% of tests are passing.

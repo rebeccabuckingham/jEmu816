@@ -8,6 +8,22 @@ def reload
   load 'createTests.rb'
 end
 
+# nvmxdizc-E
+def toFlags(baseVal, modeE)
+  f = ""
+  f += (baseVal & 128 == 128) ? 'N' : 'n'
+  f += (baseVal & 64 == 64) ? 'V' : 'v'
+  f += (baseVal & 32 == 32) ? 'M' : 'm'
+  f += (baseVal & 16 == 16) ? 'X' : 'x'
+  f += (baseVal & 8 == 8) ? 'D' : 'd'
+  f += (baseVal & 4 == 4) ? 'I' : 'i'
+  f += (baseVal & 2 == 2) ? 'Z' : 'z'
+  f += (baseVal & 1 == 1) ? 'C' : 'c'
+  f += '-'
+  f += (modeE) ? 'E' : 'e'
+  f
+end
+
 MAXMEM = 16777216
 
 @memoryAffectingIns = ['ASL','DEC','INC','LSR','MVN','MVP',
@@ -100,21 +116,16 @@ File.open("cputests.json", "wt") do |out|
 
         codeHex = code.map {|x| x.to_i.to_s(16)}
 
+        status = sprintf("pbr:%02x pc:%04x sp:%04x f:%s a:%04x x:%04x y:%04x dp:%04x dbr:%02x",
+          pbr, pc, sp, toFlags(p, modeE), a, x, y, dp, dbr)
+
         if opcode != 0xff
           testToWrite = {
             :name =>  "#{count} #{ins[:OP]} #{mode}",
             :initial => {
               :code => codeHex,
               :ram => ram,
-              :pbr => pbr.to_s(16),
-              :pc => pc.to_s(16),
-              :sp => sp.to_s(16),
-              :dbr => dbr.to_s(16),
-              :dp => dp.to_s(16),
-              :p => p.to_s(16),
-              :a => a.to_s(16),
-              :x => x.to_s(16),
-              :y => y.to_s(16)
+              :status => status
             },
             :expected => { }
           }
