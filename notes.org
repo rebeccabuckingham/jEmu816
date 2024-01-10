@@ -1,9 +1,6 @@
 * DONE Looks like the disassembler is working (!)
 * DONE reorganize/refactor Main class or rename and replace it.
   - want one w/o emu816 stuff
-* TODO need to review how some operations work, mainly ones that modify PC
-  - jmp/jsr/rts and any long versions of these
-  - branches
 * TODO look for something like Tigr already written for Java
   - JOGL: https://www.tutorialspoint.com/jogl/index.htm
   - LWJGL: https://github.com/lwjgl & https://www.lwjgl.org
@@ -22,9 +19,6 @@
       from the instruction stream, and it increments automatically.
     -- also, different parts of what the processor does handles the cycle updating as well, so
       incrementing PC, takes a cycle.
-* have a source of processor tests (json format)
-  - nevermind, they're broken.
-
 * need to generate a source of processor tests (DONE)
   - need to use opCodeList.dat to generate them
     *note* may want to hit http://www.6502.org/tutorials/65c816opcodes.html again to 

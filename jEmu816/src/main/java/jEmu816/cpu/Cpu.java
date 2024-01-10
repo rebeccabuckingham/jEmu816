@@ -353,13 +353,15 @@ public class Cpu extends CpuBase implements ByteSource {
 		int tmp = 0;
 
 		if (f.e || f.m) {
-			tmp = a.getByte() | machine.getByte(ea);
+			tmp = a.getByte();
+			tmp |= machine.getByte(ea);
 			a.setByte(tmp);
 			setnz_b(tmp);
 			addCycles(2);
 		}
 		else {
-			tmp = a.getWord() | machine.getWord(ea);
+			tmp = a.getWord();
+			tmp |= machine.getWord(ea);
 			a.setWord(tmp);
 			setnz_w(tmp);
 			addCycles(3);
@@ -388,12 +390,13 @@ public class Cpu extends CpuBase implements ByteSource {
 			pushByte(f.getP());
 
 			f.i = true;
-			f.d = true;
+			f.d = false;
 			pbr = 0;
 
 			pc = machine.getWord(0xffe4);
 			addCycles(8);
 		}
+		bytes = 0;
 	}
 
 	// 0x04|tsb|dpag|2|5|------z-|+2 if m=0, +1 if DP.l ≠ 0
@@ -1422,6 +1425,7 @@ public class Cpu extends CpuBase implements ByteSource {
 	}
 
 	// 0xe1|sbc|dpix|2|6|nv----zc|+1 if m=0, +1 if DP.l ≠ 0
+	// accumulator = accumulator - data - 1 + carry
 	private void op_sbc(int ea) {
 		if (trace) { traceOp("sbc"); }
 		if (f.e || f.m) {

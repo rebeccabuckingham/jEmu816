@@ -8,6 +8,16 @@ def reload
   load 'createTests.rb'
 end
 
+MAXMEM = 16777216
+
+def randByte
+  (rand * 256).ceil - 1
+end
+
+def randWord
+  (rand * 65536).ceil - 1
+end
+
 # nvmxdizc-E
 def toFlags(baseVal, modeE)
   f = ""
@@ -24,7 +34,7 @@ def toFlags(baseVal, modeE)
   f
 end
 
-MAXMEM = 16777216
+
 
 @memoryAffectingIns = ['ASL','DEC','INC','LSR','MVN','MVP',
   'ROL','ROR','STA','STX','STY','STZ','TRB','TSB']
@@ -62,7 +72,7 @@ File.open("cputests.json", "wt") do |out|
       ins = @opcodes[opcode]
       #puts ins
       modes.each do |mode|
-        memStart = (rand * MAXMEM).ceil
+        memStart = (rand * MAXMEM).ceil - 1
         code=[ins[:OP].to_i(16)]                    # tester will put code bytes @ pc + index of code array
         ram=[]                                      # pairs of [address, value]
         mnemonic=ins[:SYNTAX][0...3]
@@ -70,22 +80,22 @@ File.open("cputests.json", "wt") do |out|
         modeX = mode.index('X')                     # 8 bit indexes
         modeE = mode.index('E')
         modeD = mode.index('D')
-        p = (rand * 256).ceil & 0xc7                # turn off m,x,d   
+        p = randByte() & 0xc7                       # turn off m,x,d   
         p = p | 0x20 if mode.index('M')
         p = p | 0x10 if mode.index('X')
         p = p | 0x08 if mode.index('D') 
-        sp = (rand * 65536).ceil
+        sp = randWord()
         sp &= 0xff if modeE                         # constrain SP if emulation
-        dbr = modeE ? 0 : (rand * 256).ceil
-        dp = modeE ? 0 : (256 * (rand * 256).ceil)
-        pc = (rand * 65536).ceil
-        pbr = modeE ? 0 : (rand * 256).ceil
+        dbr = modeE ? 0 : randByte()
+        dp = modeE ? 0 : (256 * randByte())
+        pc = randWord()
+        pbr = modeE ? 0 : randByte()
         insSize = ins[:LEN].to_i
         error = false
 
-        a = (rand * ((modeE || modeM) ? 256 : 65536)).ceil
-        x = (rand * ((modeE || modeX) ? 256 : 65536)).ceil
-        y = (rand * ((modeE || modeX) ? 256 : 65536)).ceil
+        a = (modeE || modeM) ? randByte() : randWord()
+        x = (modeE || modeX) ? randByte() : randWord()
+        y = (modeE || modeX) ? randByte() : randWord()
 
         subForX = ins[:LEN].index('-x')
         subForM = ins[:LEN].index('-m')  
@@ -99,18 +109,18 @@ File.open("cputests.json", "wt") do |out|
         end
 
         (1...insSize).each do |i|
-          code.push ((rand * 256).ceil)
+          code.push randByte()
         end
 
         # write something to memory?  if so, always write two bytes
         if insSize > 1 && @memoryAffectingIns.index(mnemonic)
           if insSize > 2
             address = code[1] + 256*code[2]      
-            ram.push([address.to_s(16), (rand * 256).ceil.to_s(16)])
-            ram.push([(address + 1).to_s(16), (rand * 256).ceil.to_s(16)])
+            ram.push([address.to_s(16), randByte().to_s(16)])
+            ram.push([(address + 1).to_s(16), randByte().to_s(16)])
           else
             address = code[1]
-            ram.push([address.to_s(16), (rand * 256).ceil.to_s(16)])
+            ram.push([address.to_s(16), randByte().to_s(16)])
           end
         end
 
