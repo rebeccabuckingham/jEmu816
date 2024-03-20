@@ -1,0 +1,4 @@
+#!/bin/sh
+
+gcc -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/darwin/" -I"/usr/local/include/SDL2" -L/usr/local/lib -lSDL2 -o libvera.jnilib -shared src/*.c
+

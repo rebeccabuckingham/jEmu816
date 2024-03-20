@@ -4,11 +4,15 @@
 # Log file
 *.log
 
-# BlueJ files
-*.ctxt
+# build files
+app/build
+vera/build
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# IDE files
+.classpath
+.project
+.settings/
+*.iml
 
 # Package Files #
 *.jar
