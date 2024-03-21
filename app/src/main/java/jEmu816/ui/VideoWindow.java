@@ -25,9 +25,9 @@ package jEmu816.ui;
 
 //import com.loomcom.symon.exceptions.MemoryAccessException;
 
-import jEmu816.Crtc;
+import jEmu816.devices.Crtc;
 import jEmu816.DeviceChangeListener;
-import jEmu816.Keyboard;
+import jEmu816.devices.Keyboard;
 
 
 import javax.swing.*;

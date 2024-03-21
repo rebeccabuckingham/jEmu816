@@ -1,0 +1,9 @@
+* remove the Swing GUI and replace with command line options and TCP based controller
+** command line options
+  -m, --machine <classname> : classname of machine to run (default Sentinel)
+  -s, --speed <number>      : speed of the emulation in Mhz (default 8)
+  -r, --runFile <filename>  : name of file to load and run.
+  -p, --port <number>       : number of debug/command port.  (default 6502)
+  -w, --wait                : do not automatically run, wait for debugger.
+** debug port
+  command interface based on argparse.

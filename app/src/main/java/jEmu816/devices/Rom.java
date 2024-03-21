@@ -1,4 +1,4 @@
-package jEmu816;
+package jEmu816.devices;
 
 public class Rom extends Ram {
 	public Rom(String name, int baseAddress, int addressSize) {

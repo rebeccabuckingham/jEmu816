@@ -1,9 +1,8 @@
 package jEmu816.machines;
 
-import jEmu816.Acia;
-import jEmu816.Acia6551;
+import jEmu816.devices.Acia6551;
 import jEmu816.Machine;
-import jEmu816.Ram;
+import jEmu816.devices.Ram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

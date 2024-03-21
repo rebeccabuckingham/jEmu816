@@ -3,11 +3,11 @@ package jEmu816;
 // all pieces parts of a machine have to extend Device, except the Cpu.
 
 public abstract class Device {
-	protected String name;
-	protected int baseAddress;
-	protected int addressSize;
-	protected Bus bus;
-	protected Machine machine;
+	public String name;
+	public int baseAddress;
+	public int addressSize;
+	public Bus bus;
+	public Machine machine;
 
 	public Machine getMachine() { return machine; }
 	public void setMachine(Machine m) { machine = m; }

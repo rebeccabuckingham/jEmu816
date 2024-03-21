@@ -1,12 +1,11 @@
 package jEmu816.cpu;
 
-import jEmu816.Builtins;
+import jEmu816.devices.Builtins;
 import jEmu816.Bus;
 import jEmu816.Machine;
 
 import static jEmu816.cpu.Constants265.*;
 
-import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +17,12 @@ public class Cpu65265 extends Cpu {
 
   public Cpu65265(Machine machine, Bus b, int nanosPerCycle) {
     super(machine, b, nanosPerCycle);
-    
+
     // these guys always come along for the ride.
     Builtins builtins = new Builtins();
     b.addDevice(builtins);
   }
-  
+
   public void checkAndHandleExtraIRQ() {
     if (assertedIrq != null) {
       int vector = (f.e) ? assertedIrq.emuVector : assertedIrq.vector;
@@ -33,25 +32,25 @@ public class Cpu65265 extends Cpu {
       if (f.e) {
         pushWord(pc);
         pushByte(f.getP());
-  
+
         f.i = true;
         f.d = false;
         pbr = 0;
-  
+
         pc = bus.getWord(vector) & 0xffff;
         addCycles(7);
       } else {
         pushByte(pbr);
         pushWord(pc);
         pushByte(f.getP());
-  
+
         f.i = true;
         f.d = false;
         pbr = 0;
-  
+
         pc = bus.getWord(vector) & 0xffff;
         addCycles(8);
-      }      
+      }
     }
   }
 

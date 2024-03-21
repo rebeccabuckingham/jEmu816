@@ -3,18 +3,16 @@ package jEmu816;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jEmu816.cpu.Cpu;
+import jEmu816.devices.Ram;
 import jEmu816.machines.TestMachine;
 import static jEmu816.Util.*;
 import static spark.Spark.post;
 
 
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Route;
 
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 

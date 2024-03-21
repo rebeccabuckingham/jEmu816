@@ -1,9 +1,9 @@
 package jEmu816.machines;
 
-import jEmu816.Crtc;
-import jEmu816.Keyboard;
+import jEmu816.devices.Crtc;
+import jEmu816.devices.Keyboard;
 import jEmu816.Machine;
-import jEmu816.Ram;
+import jEmu816.devices.Ram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

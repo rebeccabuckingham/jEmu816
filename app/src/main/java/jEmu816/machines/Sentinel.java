@@ -1,9 +1,9 @@
 package jEmu816.machines;
 
-import jEmu816.Keyboard;
+import jEmu816.devices.Keyboard;
 import jEmu816.Machine;
-import jEmu816.Ram;
-import jEmu816.vera.VeraDevice;
+import jEmu816.devices.Ram;
+import jEmu816.devices.vera.VeraDevice;
 
 public class Sentinel extends Machine {
 	public Sentinel() {

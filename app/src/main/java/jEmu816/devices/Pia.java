@@ -21,7 +21,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jEmu816;
+package jEmu816.devices;
+
+import jEmu816.Device;
 
 public abstract class Pia extends Device {
 

@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jEmu816.Machine;
-import jEmu816.Ram;
+import jEmu816.devices.Ram;
 
 public class RefMachine extends Machine {
 	private static final Logger logger = LoggerFactory.getLogger(RefMachine.class);

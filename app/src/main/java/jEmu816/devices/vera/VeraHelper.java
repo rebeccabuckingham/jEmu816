@@ -1,4 +1,4 @@
-package jEmu816.vera;
+package jEmu816.devices.vera;
 
 public class VeraHelper {
 	public static final int AUTO_NONE = 0x000000;

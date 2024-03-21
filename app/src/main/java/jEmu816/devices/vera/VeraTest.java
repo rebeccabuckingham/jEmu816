@@ -1,9 +1,9 @@
-package jEmu816.vera;
+package jEmu816.devices.vera;
 
 import jEmu816.Util;
 
 
-import static jEmu816.vera.VeraHelper.*;
+import static jEmu816.devices.vera.VeraHelper.*;
 
 public class VeraTest {
 	short dominos_font[] = {

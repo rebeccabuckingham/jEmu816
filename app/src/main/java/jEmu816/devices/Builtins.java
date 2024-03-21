@@ -1,5 +1,6 @@
-package jEmu816;
+package jEmu816.devices;
 
+import jEmu816.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +10,8 @@ public class Builtins extends Device {
   private static final Logger logger = LoggerFactory.getLogger(Builtins.class);
 
   private Uart[] uarts;
-  private int uartBase = 0xdf70; 
-  
+  private int uartBase = 0xdf70;
+
 
   public Builtins() {
     super("65265Bi", 0xdf00, 192);
@@ -58,7 +59,7 @@ public class Builtins extends Device {
     int portNum;
     public int baseAddress;
 
-    private int ea(int addr) { 
+    private int ea(int addr) {
       return addr - baseAddress;
     }
 
@@ -70,7 +71,7 @@ public class Builtins extends Device {
     public int getByte(int addr) {
       int ea = ea(addr);
       return 0;
-    }  
+    }
 
     public void setByte(int addr, int byteValue) {
       int ea = ea(addr);

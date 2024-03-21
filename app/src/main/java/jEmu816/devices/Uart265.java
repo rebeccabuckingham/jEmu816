@@ -1,10 +1,11 @@
-package jEmu816;
+package jEmu816.devices;
 
+import jEmu816.Device;
 import jEmu816.cpu.Constants265;
 
 // emulate one of the 65c265's built-in UARTs
 //
-// not going to work with how Devices work.  Need to basically sketch out 
+// not going to work with how Devices work.  Need to basically sketch out
 // all of the built-in hardware.
 //
 public class Uart265 extends Device {
@@ -18,7 +19,7 @@ public class Uart265 extends Device {
   // TODO: these should look at the right bits in UIER
   public boolean getTxIrqEnabled() { return false; }
   public boolean getRxIrqEnabled() { return false; }
-  
+
   // TODO: set the right bits in UIFR, assert the IRQ
   public void assertTxIrq() { }
   public void assertRxIrq() { }
@@ -26,7 +27,7 @@ public class Uart265 extends Device {
   @Override
   public int getByte(int addr) {
     int realAddr = addr - baseAddress;
-   
+
     if (realAddr == CONTROL_REG) {
 
     } else {
@@ -39,7 +40,7 @@ public class Uart265 extends Device {
   @Override
   public void setByte(int addr, int byteValue) {
     int realAddr = addr - baseAddress;
-    
+
     if (realAddr == CONTROL_REG) {
 
     } else {
@@ -55,12 +56,12 @@ public class Uart265 extends Device {
 
   }
 
-  // call this in RunLoop to get the waiting to send byte from the UART 
+  // call this in RunLoop to get the waiting to send byte from the UART
   // so, from the 65816 program to send to the console.
   public int getFromUart() {
     return 0;
   }
   // **************************************************************************
 
-  
+
 }

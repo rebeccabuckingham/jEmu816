@@ -69,7 +69,7 @@ public class Util {
 	}
 
 	public static int loadFile(Machine m, String filename) throws Exception {
-		int address = 0;
+		int address = -1;
 		if (filename.endsWith(".pgz")) {
 			PgzLoader.loadPgz(filename, m);
 		} else if (filename.endsWith(".prg")) {
@@ -78,27 +78,6 @@ public class Util {
 			S28Loader.load(filename, m);
 		}
 		return address;
-	}
-
-	// takes a name of a machine type, and writes it out as json instead.
-	public static void main(String[] args) throws Exception {
-		if (args.length == 1) {
-			String filename = args[0];
-			Class machineClass = Class.forName(filename);
-
-			var constructors = machineClass.getConstructors();
-			Machine machine = (Machine) constructors[0].newInstance();
-
-			String json = machine.toJson();
-			System.out.println(json);
-
-			// check to see what we have...
-			Bus bus = new Bus();
-			Machine revivedMachine = Machine.reviveFromJson(bus, json);
-
-		} else {
-			System.out.println("usage: supply the full class name to an existing machine type to get json representation.");
-		}
 	}
 
 	public static int getShortFromByteArray(byte[] array, int offset) {

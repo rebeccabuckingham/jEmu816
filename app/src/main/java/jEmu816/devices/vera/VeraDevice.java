@@ -1,7 +1,6 @@
-package jEmu816.vera;
+package jEmu816.devices.vera;
 
 import jEmu816.Device;
-import static jEmu816.vera.VeraHelper.*;
 
 public class VeraDevice extends Device {
 	public native boolean videoInit(int window_scale, float screen_x_scale, int mhz);

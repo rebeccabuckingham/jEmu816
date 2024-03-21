@@ -21,10 +21,12 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jEmu816;
+package jEmu816.devices;
 
-import javax.swing.*;
-import java.io.IOException;
+import jEmu816.Device;
+import jEmu816.DeviceChangeListener;
+
+
 import java.util.ArrayList;
 
 /**

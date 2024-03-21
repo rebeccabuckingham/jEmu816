@@ -30,7 +30,7 @@ dependencies {
   implementation 'com.grahamedgecombe.jterminal:jterminal:1.0.1'
 
 	// for the FlatLaf look and feel
-  implementation 'com.formdev:flatlaf:3.3'    
+  implementation 'com.formdev:flatlaf:3.3'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -46,8 +46,7 @@ application {
     "-Djava.library.path=" + file("../vera/build").absolutePath
   ]
 
-  //mainClass = 'jEmu816.App'
-  mainClass = 'jEmu816.swgui.App'
+  mainClass = 'jEmu816.App'
 }
 
 tasks.named('test') {
