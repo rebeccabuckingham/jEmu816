@@ -5,5 +5,19 @@
   -r, --runFile <filename>  : name of file to load and run.
   -p, --port <number>       : number of debug/command port.  (default 6502)
   -w, --wait                : do not automatically run, wait for debugger.
-** debug port
-  command interface based on argparse.
+** add these options, too:
+  -l, --scale <number>      : vera screen scale
+*** debugger commands
+h   help
+q   quit (shut down emulator)
+d   disassemble <start address> [<end address, defaults to start address + 64 bytes>]
+x   hexdump <start address> [<end address, defaults to start address + 64 bytes>]
+s   step
+g   go
+t   tell (cpu) status 
+ba  add breakpoint <address>
+bc  clear breakpoint <address>
+bd  disable breakpoints
+be  enable breakpoints
+bl  list breakpoints
+.   continue last command [d/x/s]

@@ -15,15 +15,16 @@ public class Sentinel extends Machine {
 		bus.addDevice(ram);
 
 		VeraDevice vera = new VeraDevice(0xdf000);
-		vera.videoInit(2, 1, 8);
 		setVera(vera);
 		bus.addDevice(vera);
 
-		// TODO: add code to vera (somehow) to add characters to the keyboard.
 		Keyboard keyboard = new Keyboard("keyboard", 0xdf20);
 		bus.addDevice(keyboard);
 
-		Ram ram2 = new Ram("ram2", 0xe000, 0x200000);
+		Ram rom = new Ram("rom", 0xe000, 0x2000);
+		bus.addDevice(rom);
+
+		Ram ram2 = new Ram("ram2", 0x10000, 0x1F0000);
 		bus.addDevice(ram2);
 
 		bus.getCpu().reset();

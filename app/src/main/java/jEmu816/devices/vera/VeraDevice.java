@@ -20,7 +20,6 @@ public class VeraDevice extends Device {
 
 	public VeraDevice(int baseAddress) {
 		super("VERA", baseAddress, 32);
-		videoInit(1, 1, 8);
 	}
 
 	@Override
