@@ -44,7 +44,7 @@ application {
   // Define the main class for the application.
   applicationDefaultJvmArgs = [
     "-Djava.library.path=" + file("../vera/build").absolutePath,
-		"-XstartOnFirstThread"
+		//"-XstartOnFirstThread"
   ]
 
   mainClass = 'jEmu816.App'

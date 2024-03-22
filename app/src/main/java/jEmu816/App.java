@@ -1,8 +1,10 @@
 package jEmu816;
 
 import jEmu816.cpu.Cpu;
+import jEmu816.devices.Crtc;
 import jEmu816.devices.Keyboard;
 import jEmu816.devices.vera.VeraDevice;
+import jEmu816.ui.VideoWindow;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
@@ -25,7 +27,8 @@ public class App {
 				.description("65c816 System Emulator.");
 
 			parser.addArgument("-m", "--machine")
-				.setDefault("jEmu816.machines.Sentinel")
+				//.setDefault("jEmu816.machines.Sentinel")
+				.setDefault("jEmu816.machines.CrtcMachine")
 				.help("machine to emulate");
 
 			parser.addArgument("-s", "--speed")
@@ -74,7 +77,13 @@ public class App {
 	private Bus bus;
 	public Cpu cpu;
 	private boolean haveVera;
+	private boolean haveCrtc;
 	private VeraDevice veraDevice;
+
+	// for Crtc-equipped machines
+	private Crtc crtc;
+	private VideoWindow videoWindow;
+
 	private Keyboard keyboard;
 	private int nanosPerCycle;
 	private boolean waitForDebugger = false;
@@ -85,6 +94,19 @@ public class App {
 		Class<Machine> machineClass = (Class<Machine>) Class.forName(className);
 		var constructor = machineClass.getDeclaredConstructor();
 		machine = (Machine) constructor.newInstance();
+
+		if (machine.hasCrtc()) {
+			crtc = machine.getCrtc();
+			videoWindow = new VideoWindow(crtc, 2, 2);
+
+			videoWindow.setVisible(true);
+
+			Keyboard keyboard = (Keyboard) machine.getBus().findDeviceByClass(Keyboard.class);
+			if (keyboard != null) {
+				videoWindow.setKeyboardDevice(keyboard);
+			}
+
+		}
 	}
 
 	public App(Map<String, Object> options) throws Exception {
@@ -142,10 +164,21 @@ public class App {
 		running = false;
 	}
 
+	long lastCrtcUpdateNSec = 0;
+	long nsecBetweenCrtcUpdates = 10000;
+
+	private void updateCrtcFromRunLoop() {
+		if (videoWindow != null && videoWindow.isVisible()) {
+			videoWindow.repaint();
+		}
+	}
+
 	public void step() {
 		long insStart = System.nanoTime();
-		long insEnd;
+		long now;
 		int cycles = cpu.step();
+
+		now = System.nanoTime();
 
 		if (haveVera) {
 			boolean newFrame = veraDevice.videoStep(cycles);
@@ -157,9 +190,14 @@ public class App {
 			}
 		}
 
+		if (haveCrtc && (now - lastCrtcUpdateNSec >= nsecBetweenCrtcUpdates)) {
+			updateCrtcFromRunLoop();
+			lastCrtcUpdateNSec = now;
+		}
+
 		do {
-			insEnd = System.nanoTime();
-		} while (insEnd < (insStart + (nanosPerCycle * cycles)));
+			now = System.nanoTime();
+		} while (now < (insStart + (nanosPerCycle * cycles)));
 
 	}
 
@@ -177,6 +215,9 @@ public class App {
 
 		haveVera = machine.hasVera();
 		veraDevice = machine.getVera();
+
+		haveCrtc = machine.hasCrtc();
+
 		keyboard = (Keyboard) bus.findDeviceByClass(Keyboard.class);
 
 		if (haveVera) {

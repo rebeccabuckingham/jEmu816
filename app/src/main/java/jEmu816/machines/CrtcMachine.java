@@ -15,27 +15,37 @@ public class CrtcMachine extends Machine {
 
 		setName("CrtcMachine");
 
+		// 				ram: $00:0000 - $00:d6ff
+		//  video ram: $00:d700 - $00:ddff
+		//       crtc: $00:df00 - $00:df01
+		//   keyboard: $00:df02 - $00:df03
+    //        rom: $00:e000 - $00:ffff
+		//   high ram: $01:0000 - $1f:ffff
+
+		// note that this differs from the Sentinel machine in that
+		// the Sentinel has RAM all the way up to 0xdf00.
+
 		// ram up to the I/O area
-		Ram ram = new Ram("ram", 0x0, 0xd000);
+		Ram ram = new Ram("ram", 0x0, 0xd700);
 		bus.addDevice(ram);
 
-		// I/O Area: $d000-$dfff
-		// I/O: Keyboard @ 0xd010 (2 bytes)
-		//      Crtc @ 0xd20 (2 bytes)
-		Keyboard keyboard = new Keyboard("KEYBOARD", 0xd010);
+		Keyboard keyboard = new Keyboard("KEYBOARD", 0xdf02);
 		bus.addDevice(keyboard);
 
 		// videoRam has to be in its own device
-		Ram videoRam = new Ram("videoRam", 0xd800, 0x800);
+		Ram videoRam = new Ram("videoRam", 0xd700, 0x800);
 		bus.addDevice(videoRam);
 
 		// this is how we attach the Crtc.
 		hasCrtc = true;
-		setCrtc(new Crtc(0xd020, videoRam));
+		setCrtc(new Crtc(0xdf00, videoRam));
 		bus.addDevice(getCrtc());
 
-		// ram upto 256k
-		Ram ram3 = new Ram("ram3", 0xe000, 0x32000);
+		Ram rom = new Ram("rom", 0xe000, 0x2000);
+		bus.addDevice(rom);
+
+		// ram upto 2M.
+		Ram ram3 = new Ram("ram3", 0x10000, 0x1f0000);
 		bus.addDevice(ram3);
 
 		bus.getCpu().reset();
