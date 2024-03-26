@@ -27,3 +27,4 @@ vera/build
 hs_err_pid*
 replay_pid*
 app/libs/
+app/bin/

@@ -1,3 +1,4 @@
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
   // Apply the application plugin to add support for building a CLI application in Java.
@@ -63,19 +64,26 @@ distributions {
 
 compileJava.dependsOn compileJNI
 copyJNILibrary.dependsOn compileJNI
+distTar.dependsOn compileJava, copyJNILibrary
 distZip.dependsOn compileJava, copyJNILibrary
 
 application {
+  // add the library path when using 'gradle run'
+  // and a separate one when using 'gradle distZip'
   if (gradle.startParameter.taskNames.contains('run')) {
     applicationDefaultJvmArgs = [
       "-Djava.library.path=" + file("../vera/build").absolutePath,
-      //"-XstartOnFirstThread"
     ]
   } else {
     applicationDefaultJvmArgs = [
       "-Djava.library.path=.",
-      //"-XstartOnFirstThread"
     ]
+  }
+
+  // on mac, pass in -PuseVera to add the -XstartOnFirstThread option
+  // that's needed for SDL.
+  if (project.hasProperty('useVera') && Os.isFamily(Os.FAMILY_MAC)) {
+    applicationDefaultJvmArgs += "-XstartOnFirstThread"
   }
 
   mainClass = 'jEmu816.App'
