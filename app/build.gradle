@@ -40,12 +40,43 @@ java {
   }
 }
 
+task compileJNI(type: Exec) {
+    workingDir file("../vera").absolutePath
+    commandLine 'make'
+}
+
+task copyJNILibrary(type: Copy) {
+    from file("../vera/build/libvera.jnilib").absolutePath
+    into 'libs'
+}
+
+distributions {
+    main {
+        contents {
+            // Include the compiled Java classes
+            from { project.tasks.getByName('jar').outputs.files }
+            // Include the copied JNI library
+            from 'libs'
+        }
+    }
+}
+
+compileJava.dependsOn compileJNI
+copyJNILibrary.dependsOn compileJNI
+distZip.dependsOn compileJava, copyJNILibrary
+
 application {
-  // Define the main class for the application.
-  applicationDefaultJvmArgs = [
-    "-Djava.library.path=" + file("../vera/build").absolutePath,
-		//"-XstartOnFirstThread"
-  ]
+  if (gradle.startParameter.taskNames.contains('run')) {
+    applicationDefaultJvmArgs = [
+      "-Djava.library.path=" + file("../vera/build").absolutePath,
+      //"-XstartOnFirstThread"
+    ]
+  } else {
+    applicationDefaultJvmArgs = [
+      "-Djava.library.path=.",
+      //"-XstartOnFirstThread"
+    ]
+  }
 
   mainClass = 'jEmu816.App'
 }
