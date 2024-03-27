@@ -42,6 +42,11 @@ Vera emulation just works on Linux, so always use:
 ./gradlew run --args='/arguments/'
 ```
 
+### Example
+```
+./gradlew run --args='-m jEmu816.machines.CrtcMachine -s 8 -f ./examples/echoTest-xa.prg'
+```
+
 ### Arguments
 | Option                        | Description |
 |-------------------------------| --- |
